@@ -1,0 +1,69 @@
+<head>
+  <style> body { margin: 0; } </style>
+
+  <script src="//unpkg.com/react@16/umd/react.production.min.js"></script>
+  <script src="//unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <script src="//unpkg.com/babel-standalone"></script>
+
+  <script src="//unpkg.com/react-globe.gl"></script>
+  <!--<script src="../../dist/react-globe.gl.js"></script>-->
+</head>
+
+<body>
+<div id="globeViz"></div>
+
+<script type="text/jsx">
+  const { useState, useEffect } = React;
+
+  function BuggedArcs() {
+    const [arcsData, setArcsData] = useState([]);
+    const [generatedData, setGeneratedData] = useState([]);
+
+    // Gen random data
+    useEffect(() => {
+      const N = 20;
+      const gData = [...Array(N).keys()].map(() => ({
+        startLat: (Math.random() - 0.5) * 180,
+        startLng: (Math.random() - 0.5) * 360,
+        endLat: (Math.random() - 0.5) * 180,
+        endLng: (Math.random() - 0.5) * 360,
+        color: [['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)], ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]]
+      }));
+
+      setGeneratedData(gData);
+      setArcsData(gData);
+    }, [])
+
+    const removeButton = () => {
+      console.log('REMOVING ARC');
+      const temp = [...arcsData];
+      temp.pop();
+      setArcsData(temp);
+    }
+
+    const resetButton = () => {
+      console.log('RESETTING ARCS');
+      setArcsData(generatedData);
+    }
+
+    console.log(arcsData);
+
+    return (
+      <div>
+        <button onClick={() => removeButton()}>REMOVE LINE</button>
+        <button onClick={() => resetButton()}>RESET</button>
+        <Globe
+          globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+          arcsData={arcsData}
+          arcColor={'color'}
+        />
+      </div>
+    )
+  }
+
+  ReactDOM.render(
+    <BuggedArcs/>,
+    document.getElementById('globeViz')
+  );
+</script>
+</body>
